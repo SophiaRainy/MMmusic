@@ -16,6 +16,7 @@
   "build": {
     "appId": "com.mineradio.desktop",
     "productName": "Mineradio",
+    "electronVersion": "42.4.1",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -49,7 +50,7 @@
     "win": {
       "executableName": "Mineradio",
       "icon": "build/icon.ico",
-      "signAndEditExecutable": false,
+      "signExecutable": false,
       "target": [
         {
           "target": "nsis",

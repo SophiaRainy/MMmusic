@@ -2248,12 +2248,13 @@ function ensureDesktopShortcut() {
   try {
     const shortcutPath = path.join(app.getPath('desktop'), `${APP_NAME}.lnk`);
     const target = process.execPath;
+    const shortcutIcon = fs.existsSync(APP_ICON_ICO) ? APP_ICON_ICO : target;
     const shortcut = {
       target,
       cwd: path.dirname(target),
       args: '',
       description: `${APP_NAME} desktop music player`,
-      icon: fs.existsSync(APP_ICON_ICO) ? APP_ICON_ICO : target,
+      icon: shortcutIcon,
       iconIndex: 0,
       appUserModelId: APP_USER_MODEL_ID,
     };
@@ -2261,7 +2262,10 @@ function ensureDesktopShortcut() {
     if (fs.existsSync(shortcutPath) && shell.readShortcutLink) {
       try {
         const existing = shell.readShortcutLink(shortcutPath);
-        if (existing && path.resolve(existing.target || '') === path.resolve(target) && String(existing.args || '') === '') {
+        const targetMatches = existing && path.resolve(existing.target || '') === path.resolve(target);
+        const iconMatches = existing && path.resolve(existing.icon || existing.target || '') === path.resolve(shortcutIcon);
+        const appIdMatches = existing && String(existing.appUserModelId || '') === APP_USER_MODEL_ID;
+        if (targetMatches && iconMatches && appIdMatches && String(existing.args || '') === '') {
           return { ok: true, path: shortcutPath, existing: true };
         }
       } catch (_) {}
